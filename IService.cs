@@ -18,10 +18,10 @@ namespace CoreWCFService1
     public class Service : IService
     {
 
-
+        [Authorize]
         public string GetData(int value)
         {
-            return string.Format("You entered: {0}", value);
+            return $"You entered: {value}. The value of ServiceSecurityContext.Current.PrimaryIdentity.Name is (current user): {ServiceSecurityContext.Current.PrimaryIdentity.Name}";
         }
 
 

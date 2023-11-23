@@ -12,10 +12,10 @@ builder.Services.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddr
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 
-if(ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
-{
-    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-}
+//if(ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
+//{
+//    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+//}
 
 builder.Services.AddAuthentication("Basic").
             AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
@@ -51,14 +51,14 @@ app.Use(async (context, next) =>
 
 app.UseServiceModel(serviceBuilder =>
 {
-    var basicHttpBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+    var basicHttpBinding = new BasicHttpBinding();
+    basicHttpBinding.Security.Mode = BasicHttpSecurityMode.Transport;
     basicHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Basic;
-    serviceBuilder.AddService<Service>();
+    serviceBuilder.AddService<Service>(options =>
+    {
+        options.DebugBehavior.IncludeExceptionDetailInFaults = true;
+    });
     serviceBuilder.AddServiceEndpoint<Service, IService>(basicHttpBinding, "/Service.svc");
-
-    var security = SecurityBindingElement.CreateUserNameOverTransportBindingElement();
-    security.SecurityHeaderLayout = SecurityHeaderLayout.Lax;
-
 
     var serviceMetadataBehavior = app.Services.GetRequiredService<ServiceMetadataBehavior>();
     serviceMetadataBehavior.HttpsGetEnabled = true;
