@@ -1,9 +1,4 @@
-﻿using CoreWCF;
-using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Runtime.Serialization;
-
-namespace CoreWCFService1
+﻿namespace CoreWCFService1
 {
     [ServiceContract]
     public interface IService
@@ -13,30 +8,6 @@ namespace CoreWCFService1
 
         [OperationContract]
         CompositeType GetDataUsingDataContract(CompositeType composite);
-    }
-
-    public class Service : IService
-    {
-
-        [Authorize]
-        public string GetData(int value)
-        {
-            return $"You entered: {value}. The value of ServiceSecurityContext.Current.PrimaryIdentity.Name is (current user): {ServiceSecurityContext.Current.PrimaryIdentity.Name}";
-        }
-
-
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
-        {
-            if (composite == null)
-            {
-                throw new ArgumentNullException("composite");
-            }
-            if (composite.BoolValue)
-            {
-                composite.StringValue += "Suffix";
-            }
-            return composite;
-        }
     }
 
     // Use a data contract as illustrated in the sample below to add composite types to service operations.

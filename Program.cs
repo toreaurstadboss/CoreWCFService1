@@ -1,6 +1,4 @@
-﻿using CoreWCF.Security;
-using Microsoft.AspNetCore.Authentication;
-using System.Net;
+﻿using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -11,11 +9,6 @@ builder.Services.AddServiceModelMetadata();
 builder.Services.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
-
-//if(ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
-//{
-//    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-//}
 
 builder.Services.AddAuthentication("Basic").
             AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>
@@ -28,7 +21,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-//app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
